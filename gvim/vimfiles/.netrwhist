@@ -1,0 +1,12 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhistcnt =4
+let g:netrw_dirhist_4='E:/DS5_CE_Verification/aic1601-ce-20201023/aic1601-basic/module/ce'
+let g:netrw_dirhist_3='E:\DS5_CE_Verification\aic1601-ce-20201023\aic1601-basic\module\ce'
+let g:netrw_dirhist_2='E:/DS5_CE_Verification/aic1601-ce-20201023/aic1601-basic/module/ce'
+let g:netrw_dirhist_1='E:\DS5_CE_Verification\aic1601-ce-20201023\aic1601-basic\module\ce'
+let g:netrw_dirhist_0='E:/DS5_CE_Verification/aic1601-ce-20201023/aic1601-basic'
+let g:netrw_dirhist_9='E:/DS5_CE_Verification/aic1601-ce-20201023/aic1601-basic/module/ce'
+let g:netrw_dirhist_8='E:\DS5_CE_Verification\aic1601-ce-20201023\aic1601-basic\module\ce'
+let g:netrw_dirhist_7='E:/DS5_CE_Verification/aic1601-ce-20201023/aic1601-basic/module/ce'
+let g:netrw_dirhist_6='E:\DS5_CE_Verification\aic1601-ce-20201023\aic1601-basic\module\ce'
+let g:netrw_dirhist_5='E:/DS5_CE_Verification/aic1601-ce-20201023/aic1601-basic'

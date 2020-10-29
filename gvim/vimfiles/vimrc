@@ -1,0 +1,269 @@
+" Vim with all enhancements
+source $VIMRUNTIME/vimrc_example.vim
+" Mouse behavior (the Windows way)
+behave mswin
+
+" Use the internal diff if available.
+" Otherwise use the special 'diffexpr' for Windows.
+if &diffopt !~# 'internal'
+  set diffexpr=MyDiff()
+endif
+function MyDiff()
+  let opt = '-a --binary '
+  if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
+  if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
+  let arg1 = v:fname_in
+  if arg1 =~ ' ' | let arg1 = '"' . arg1 . '"' | endif
+  let arg1 = substitute(arg1, '!', '\!', 'g')
+  let arg2 = v:fname_new
+  if arg2 =~ ' ' | let arg2 = '"' . arg2 . '"' | endif
+  let arg2 = substitute(arg2, '!', '\!', 'g')
+  let arg3 = v:fname_out
+  if arg3 =~ ' ' | let arg3 = '"' . arg3 . '"' | endif
+  let arg3 = substitute(arg3, '!', '\!', 'g')
+  if $VIMRUNTIME =~ ' '
+    if &sh =~ '\<cmd'
+      if empty(&shellxquote)
+        let l:shxq_sav = ''
+        set shellxquote&
+      endif
+      let cmd = '"' . $VIMRUNTIME . '\diff"'
+    else
+      let cmd = substitute($VIMRUNTIME, ' ', '" ', '') . '\diff"'
+    endif
+  else
+    let cmd = $VIMRUNTIME . '\diff'
+  endif
+  let cmd = substitute(cmd, '!', '\!', 'g')
+  silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3
+  if exists('l:shxq_sav')
+    let &shellxquote=l:shxq_sav
+  endif
+endfunction
+
+source $VIMRUNTIME/delmenu.vim
+set langmenu=none
+source $VIMRUNTIME/menu.vim
+set nocompatible              " be iMproved, required
+filetype off
+set guioptions-=T " disable toolbar
+set guioptions-=L
+set guioptions-=R
+set guioptions-=r " disable scrollbar
+set guioptions-=m
+set guifont=Cascadia_Mono:h10
+set guiheadroom=0
+
+language messages en " Use english
+let g:mapleader=","
+
+" set the runtime path to include Vundle and initialize
+set rtp+=$HOME/vimfiles/bundle/Vundle.vim/
+call vundle#begin('$USERPROFILE/vimfiles/bundle')
+" alternatively, pass a path where Vundle should install plugins
+"call vundle#begin('~/some/path/here')
+
+" let Vundle manage Vundle, required
+Plugin 'VundleVim/Vundle.vim'
+
+" The following are examples of different formats supported.
+" Keep Plugin commands between vundle#begin/end.
+
+" ============================================================
+Plugin 'junegunn/fzf'
+Plugin 'junegunn/fzf.vim'
+noremap <C-p> :Files<CR>
+noremap <Space>pf :Files<CR>
+noremap <Space>ff :Files <C-R>=expand("%:p:h")<CR><CR>
+noremap <C-b> :Buffers<CR>
+noremap <Space>bb :Buffers<CR>
+" Close all buffers
+noremap <Space>bc :bufdo bd<CR>
+" Lines
+" search all buffers
+noremap <Space>sb :Lines<CR>
+
+" BLines
+" Search current buffer
+noremap <Space>ss :BLines<CR>
+" BTags
+" Search file outline
+noremap <leader>fo :BTags<CR>
+nnoremap <C-[>r :Rg! <C-R>=expand("<cword>")<CR><CR>
+noremap <leader>rw :Rg! <C-R>=expand("<cword>")<CR><CR>
+" Search whole project
+noremap <Space>sP :Rg! <C-R>=expand("<cword>")<CR><CR>
+noremap <Leader>r :Rg!<Space>
+
+" ============================================================
+Plugin 'vim-easy-align'
+vmap <Leader>a <Plug>(EasyAlign)
+nmap <Leader>a <Plug>(EasyAlign)
+
+" ============================================================
+Plugin 'editorconfig-vim'
+
+" ============================================================
+" clang-format.py
+map <C-K> :pyf ~/vimfiles/mybin/clang-format.py<CR>
+" Can configure clang format path
+"let g:clang_format_path = "clang-format-3.8"
+
+noremap <Space>bn :bn<CR>
+noremap <Space>bp :bp<CR>
+noremap <Space>bg :b<Space>
+noremap <Space><Tab> :b#<CR>
+
+" leader key default is '\'
+"
+" :cw to show quickfix list
+" :cn
+" :cp
+
+noremap <C-L> :botright cw<CR>
+noremap <C-H> :cclose<CR>
+" SPC + e + l hide quickfix window
+noremap <Space>el :cw<CR>
+" SPC + e + h hide quickfix window
+noremap <Space>eh :cclose<CR>
+" SPC + e + < older quickfix window
+noremap <Space>e< :colder<CR>
+" SPC + e + > newer quickfix window
+noremap <Space>e> :cnewer<CR>
+noremap <F8> :cp<CR>
+noremap <F9> :cn<CR>
+" SPC + e + n next item
+noremap <Space>en :cn<CR>
+" SPC + e + p previous item
+noremap <Space>ep :cp<CR>
+
+" Scrolling
+" Ctrl+F
+" Ctrl+B
+" Ctrl+D
+" Ctrl+U
+" Ctro+E/Y scrolling with 5 lines every time
+noremap <C-E> 20<C-E>
+noremap <C-Y> 20<C-Y>
+
+" Completion
+inoremap<C-]> <C-X><C-]>
+inoremap<C-N> <C-X><C-N>
+inoremap<C-D> <C-X><C-D>
+
+" zz  middle of window
+" zt  top of window
+" zb  bottom of window
+
+" cscope -Rbq
+" csto = 0, cscope database will be search first, 1 ctags first
+set csto=0 	" cscope tag order
+
+" cst set this option so that search cscope and tags database at the
+" same time
+set cst
+" set nocst
+" cscopeverbose
+set nocsverb
+
+" add any database in current directory
+if filereadable("cscope.out")
+	cs add cscope.out
+" else add database pointed to by environment
+elseif $CSCOPE_DB != ""
+	cs add $CSCOPE_DB
+endif
+
+set csverb
+set cscopequickfix=s-,c-,d-,i-,t-,e-,g-
+" s: Find this C symbol
+" \fs
+nnoremap  <leader>fs :cs find s <C-R>=expand("<cword>")<CR><CR>
+
+" g: Find this definition
+" \fg
+nnoremap  <leader>fg :cs find g <C-R>=expand("<cword>")<CR><CR>
+
+" d: Find functions called by this function
+" \fd
+nnoremap  <leader>fd :cs find d <C-R>=expand("<cword>")<CR><CR>
+
+" c: Find functions calling this function
+" \fc
+nnoremap  <leader>fc :cs find c <C-R>=expand("<cword>")<CR><CR>
+
+" t: Find this text string
+" \ft
+nnoremap  <leader>ft :cs find t <C-R>=expand("<cword>")<CR><CR>
+
+" e: Find this egrep pattern
+" \fe
+nnoremap  <leader>fe :cs find e <C-R>=expand("<cword>")<CR><CR>
+
+" f: Find this file, then open it
+" \ff
+nnoremap  <leader>ff :cs find f <C-R>=expand("<cword>")<CR><CR>
+
+" i: Find files #including this file
+" \fi
+nnoremap  <leader>fi :cs find i <C-R>=expand("<cword>")<CR><CR>
+
+" \fg
+noremap <leader>g :cstag<Space>
+
+" \fe
+noremap <leader>e :cs find e<Space>
+
+" All of your Plugins must be added before the following line
+call vundle#end()            " required
+"============================================================
+filetype plugin indent on    " required
+set tags=tags 		" Ctags filename
+"set tags+=xxxxx 	" Can add multi tags file
+"set autochdir
+set number
+
+" no backup file
+set nobackup
+set noundofile
+set noswapfile		" No swap file
+set laststatus=2
+set ruler
+set tabstop=8		" Tab character width
+"set softtabstop=8	" Set soft tab character width
+"set shiftwidth=8	" Set auto indent width
+"set expandtab 		" Expand to space
+"set noexpandtab 	" No expand to space
+set cc=80		" Should not exceed 80 characters
+set ff=unix
+set hlsearch		" Highlight search 
+set incsearch		" Incremental search
+set autoindent 		" Use  :set paste   set nopaste to enter paste mode
+set cindent
+set backspace=indent,eol,start	" Backspace key work mode
+set history=1000	" Set command history
+set showcmd		" Status bar show command
+set showmatch		" 
+
+syntax enable		" Syntax highlight keyword
+syntax on
+colorscheme desert 	" Can check in /usr/share/vim/xxx/colors
+hi search guibg=Orange guifg=White
+hi ColorColumn guibg=Grey
+
+set encoding=utf-8
+set fileencodings=ucs-bom,utf-8,cp936,gb18030,big5,euc-jp,euc-kr,latin1
+filetype on		" Auto detect file type
+filetype indent on	" Different file type use different indent
+filetype plugin on
+filetype plugin indent on
+
+" zc close folder
+" zo open folder
+" za switch
+set foldenable
+set foldmethod=syntax
+set foldcolumn=0
+setlocal foldlevel=1
+set foldlevelstart=99
+
